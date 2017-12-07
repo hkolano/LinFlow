@@ -1,5 +1,5 @@
 clf
-mu = 1; gam = pi/3; V=1;
+mu = 1; gam = 0; V=1;
 x = -3:.02:3;
 y = -2:.02:2;
 for m = 1:length(x)
