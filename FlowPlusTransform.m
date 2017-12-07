@@ -1,3 +1,21 @@
+clf
+mu = 1; gam = pi/3; V=1;
+x = -3:.02:3;
+y = -2:.02:2;
+for m = 1:length(x)
+for n = 1:length(y)
+xx(m,n) = x(m); yy(m,n) = y(n);
+psis(m,n) = V * y(n) - mu * y(n)/(x(m)^2+(y(n)+.01)^2) ...
+- (gam/4/pi)*log(x(m)^2+(y(n)+.01)^2);
+end
+end
+contour(xx,yy,psis,[-3:.3:3],'k'), axis image
+figure;
+
+
+
+
+
 % Joukowski transformation MATLAB code
 %
 % Example of conformal mapping of a circle to an airfoil
@@ -23,9 +41,15 @@ n = 2 - te; % Number related to trailing edge angle.
 tea = (n^2-1)/3; % This is a Karman-Trefftz extension.
 % Step 2: Compute the coordinates of points on circle in zp-plane:
 R = 1 + e;
-theta = 0:pi/200:2*pi;  
-yp = R * sin(theta);     
-xp = R * cos(theta);
+
+
+%theta = 0:pi/200:2*pi;  
+% yp = R * sin(theta);     
+% xp = R * cos(theta);
+
+xp = xx;
+yp = yy;
+
 % Step 3: Transform coordinates of circle from zp-plane to z-plane:
 z = (xp - e) + j.*(yp + f);
 % Step 4: Transform circle from z-plane to airfoil in w-plane
@@ -35,3 +59,15 @@ w = rot .* (z + tea*1./z); % Joukowski transformation.
 % Step 5: Plot of circle in z-plane on top of airfoil in w-plane
 plot(xp,yp), hold on
 plot(real(w),imag(w),'r'),axis image, hold off
+
+figure;
+
+for m = 1:length(x)
+for n = 1:length(y)
+xx(m,n) = x(m); yy(m,n) = y(n);
+psis(m,n) = V * y(n) - mu * y(n)/(x(m)^2+(y(n)+.01)^2) ...
+- (gam/4/pi)*log(x(m)^2+(y(n)+.01)^2);
+end
+end
+contour(xx,yy,psis,[-3:.3:3],'k'), axis image
+hold on;
