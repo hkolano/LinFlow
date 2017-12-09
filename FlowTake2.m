@@ -1,14 +1,14 @@
 clf
-mu = 1; gam = pi/3; V=1;
+mu = 1; gam = 0; V=1;
 x = -3:.02:3;
 y = -2:.02:2;
-% for m = 1:length(x)
-% for n = 1:length(y)
-% xx(m,n) = x(m); yy(m,n) = y(n);
-% psis(m,n) = V * y(n) - mu * y(n)/(x(m)^2+(y(n)+.01)^2) ...
-% - (gam/4/pi)*log(x(m)^2+(y(n)+.01)^2);
-% end
-% end
+for m = 1:length(x)
+for n = 1:length(y)
+xx(m,n) = x(m); yy(m,n) = y(n);
+psis(m,n) = V * y(n) - mu * y(n)/(x(m)^2+(y(n)+.01)^2) ...
+- (gam/4/pi)*log(x(m)^2+(y(n)+.01)^2);
+end
+end
 % contour(xx,yy,psis,[-3:.3:3],'k'), axis image
 % figure;
 
@@ -37,35 +37,32 @@ n = 2 - te; % Number related to trailing edge angle.
 tea = (n^2-1)/3; % This is a Karman-Trefftz extension.
 % Step 2: Compute the coordinates of points on circle in zp-plane:
 R = 1 + e;
-
 mu = 1; gam = 0; V=1;
 
-x = -3:.02:3;
-y = -3:.02:3;
+
 theta = 0:pi/200:2*pi;  
 yp = R * sin(theta);     
 xp = R * cos(theta);
-xp1 = x;
-yp1 = y;
 
+x = -3:.02:3;
+y = -3:.02:3;
 % Step 3: Transform coordinates of circle from zp-plane to z-plane:
-z = (xp1 - e) + j.*(yp1 + f);
+for m = 1:length(x)
+for n = 1:length(y)
+z = (x(m) - e) + 1i.*(y(n) + f);
 % Step 4: Transform circle from z-plane to airfoil in w-plane
 % (the w-plane is the "physical" plane of the airfoil):
-rot = exp(j*a); % Application of angle of attack.
-w = rot .* (z + tea*1./z); % Joukowski transformation.
+rot = exp(1i*a); % Application of angle of attack.
+w(m,n) = rot .* (z + tea.*1./z); % Joukowski transformation.
 % Step 5: Plot of circle in z-plane on top of airfoil in w-plane
-plot(xp1,yp1), hold on
-plot(real(w),imag(w),'r'),axis image, hold off
 
-figure;
-for m = 1:length(real(w))
-for n = 1:length(imag(w))
-xx(m,n) = imag(w(m)); yy(m,n) = imag(w(n));
-psis(m,n) = V * y(n) - mu * y(n)/(x(m)^2+(y(n)+.01)^2) ...
-- (gam/4/pi)*log(x(m)^2+(y(n)+.01)^2);
+xx(m,n) = real(w(m)); yy(m,n) = imag(w(n));
+psis(m,n) = V * imag(w(n)) - mu * imag(w(n))/(real(w(m))^2+(imag(w(n))+.01)^2) ...
+- (gam/4/pi)*log(real(w(m))^2+(imag(w(n))+.01)^2);
+
+
 end
 end
-
-contour(xx,yy,psis,[-3:.3:3],'k'), axis image
-
+contour(xx,yy,psis,[-3:.02:3],'k'), axis image
+% plot(x,y), hold on
+plot(real(w),imag(w),'r'),axis image
